@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 50px 15px;
+        }
+        .form-container, .resume-preview {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .form-control, .form-select, textarea {
+            border-radius: 10px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .form-control:focus, .form-select:focus, textarea:focus {
+            border-color: #007BFF;
+            box-shadow: inset 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .btn {
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 16px;
+        }
+        .resume-template {
+            display: none;
+        }
+        .selected {
+            display: block;
+        }
+        .template1 {
+            border-left: 5px solid #007BFF;
+            padding-left: 20px;
+        }
+        .template2 {
+            background: #e0e0e0;
+            padding: 25px;
+            border-radius: 10px;
+        }
+        .extra-section {
+            margin-top: 20px;
+        }
+        .extra-section input, .extra-section textarea {
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+        }
+        .extra-section h3 {
+            color: #007BFF;
+        }
+        .template-header {
+            margin-bottom: 15px;
+        }
+        .template-footer {
+            text-align: center;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center">Resume Builder</h1>
+        <div class="row g-4">
+            <div class="col-md-5">
+                <div class="form-container">
+                    <h2>Enter Your Details</h2>
+                    <input type="text" id="name" class="form-control mb-2" placeholder="Full Name">
+                    <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+                    <input type="text" id="phone" class="form-control mb-2" placeholder="Phone">
+                    <input type="text" id="linkedin" class="form-control mb-2" placeholder="LinkedIn URL">
+                    <input type="text" id="education" class="form-control mb-2" placeholder="Education (Degree, College, Year)">
+                    <textarea id="experience" class="form-control mb-2" placeholder="Experience"></textarea>
+                    <textarea id="skills" class="form-control mb-2" placeholder="Skills"></textarea>
+                    <textarea id="achievements" class="form-control mb-2" placeholder="Achievements"></textarea>
+
+                    <!-- Extra Section Inputs -->
+                    <div class="extra-section">
+                        <h3>Certifications</h3>
+                        <textarea id="certifications" class="form-control mb-2" placeholder="Certifications"></textarea>
+                    </div>
+
+                    <div class="extra-section">
+                        <h3>Projects</h3>
+                        <textarea id="projects" class="form-control mb-2" placeholder="Projects"></textarea>
+                    </div>
+
+                    <select id="template" class="form-select mb-3">
+                        <option value="template1">Classic</option>
+                        <option value="template2">Modern</option>
+                    </select>
+
+                    <button class="btn btn-primary w-100 mb-2" onclick="updatePreview()">Update Preview</button>
+                    <button class="btn btn-success w-100" onclick="downloadPDF()">Download PDF</button>
+                </div>
+            </div>
+
+            <div class="col-md-7">
+                <div class="resume-preview">
+                    <div id="template1" class="resume-template template1 selected">
+                        <div class="template-header">
+                            <h2 id="r-name1"></h2>
+                            <p><strong>Email:</strong> <span id="r-email1"></span></p>
+                            <p><strong>Phone:</strong> <span id="r-phone1"></span></p>
+                            <p><strong>LinkedIn:</strong> <a id="r-linkedin1" target="_blank"></a></p>
+                        </div>
+                        <h3>Education</h3>
+                        <p id="r-education1"></p>
+                        <h3>Experience</h3>
+                        <p id="r-experience1"></p>
+                        <h3>Skills</h3>
+                        <p id="r-skills1"></p>
+                        <h3>Achievements</h3>
+                        <p id="r-achievements1"></p>
+                        <h3>Certifications</h3>
+                        <p id="r-certifications1"></p>
+                        <h3>Projects</h3>
+                        <p id="r-projects1"></p>
+                    </div>
+
+                    <div id="template2" class="resume-template template2">
+                        <div class="template-header">
+                            <h1 id="r-name2"></h1>
+                            <p><strong>Email:</strong> <span id="r-email2"></span></p>
+                            <p><strong>Phone:</strong> <span id="r-phone2"></span></p>
+                            <p><strong>LinkedIn:</strong> <a id="r-linkedin2" target="_blank"></a></p>
+                        </div>
+                        <h3>Education</h3>
+                        <p id="r-education2"></p>
+                        <h3>Experience</h3>
+                        <p id="r-experience2"></p>
+                        <h3>Skills</h3>
+                        <p id="r-skills2"></p>
+                        <h3>Achievements</h3>
+                        <p id="r-achievements2"></p>
+                        <h3>Certifications</h3>
+                        <p id="r-certifications2"></p>
+                        <h3>Projects</h3>
+                        <p id="r-projects2"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updatePreview() {
+            let fields = ['name', 'email', 'phone', 'linkedin', 'education', 'experience', 'skills', 'achievements', 'certifications', 'projects'];
+            let selectedTemplate = document.getElementById('template').value;
+            document.querySelectorAll('.resume-template').forEach(template => template.classList.remove('selected'));
+            document.getElementById(selectedTemplate).classList.add('selected');
+
+            fields.forEach(field => {
+                document.getElementById(`r-${field}1`).textContent = document.getElementById(field).value;
+                document.getElementById(`r-${field}2`).textContent = document.getElementById(field).value;
+                if (field === "linkedin") {
+                    document.getElementById(`r-${field}1`).href = document.getElementById(field).value;
+                    document.getElementById(`r-${field}2`).href = document.getElementById(field).value;
+                }
+            });
+        }
+
+        function downloadPDF() {
+            let selectedTemplate = document.querySelector('.resume-template.selected');
+            const opt = {
+                margin: 0.5,
+                filename: 'Resume.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, scrollX: 0, scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().from(selectedTemplate).set(opt).save();
+        }
+    </script>
+</body>
+</html>
+]
